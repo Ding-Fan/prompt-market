@@ -1,13 +1,10 @@
-<div align="center">
-  <br>
- <img src="https://raw.githubusercontent.com/sinanbekar/browser-extension-react-typescript-starter/main/public/images/extension_128.png" alt="Browser Extension React & TypeScript Starter" width="128">
-  <br>
-  <h2>
-    Browser Extension <br>
-    React & TypeScript Starter
-    <br>
-  </h2>
-</div>
+## Usage
+
+Install the extension use dist in release page.
+
+Right click on the extension icon and click on edit prompts.
+
+Right click in chatgpt input box and click prompts to select prompts
 
 <p align="center">A cross-platform (Chrome, Firefox, Edge, Opera, Brave) web browser extension (Manifest V3 and Manifest V2) starter kit with hot reload support, built with React, Typescript, Redux, Vite, ESLint, Prettier, TailwindCSS, Jest and more! </p>
 <hr />

@@ -32,11 +32,11 @@ jobs:
 
       # Step 4: Zip the dist/ folder
       - name: Zip dist/ folder
-        run: zip -r dist.zip ./dist/
+        run: zip -r dist.zip ./dist/*
 
       # Step 5: Zip the dist-firefox-v2/ folder
       - name: Zip dist-firefox-v2/ folder
-        run: zip -r dist-firefox-v2.zip ./dist-firefox-v2/
+        run: zip -r dist-firefox-v2.zip ./dist-firefox-v2/*
 
       # Step 6: Create a GitHub release
       - name: Create GitHub release

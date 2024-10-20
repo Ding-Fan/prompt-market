@@ -21,11 +21,11 @@ jobs:
           node-version: '16'
 
       # Step 3: Install dependencies and build the project (adjust based on your build process)
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies using Yarn
+        run: yarn install
 
       - name: Build project
-        run: npm run build # Assumes your build script generates the dist/ and dist-firefox-v2/ directories
+        run: yarn build # Assumes your build script generates the dist/ and dist-firefox-v2/ directories
 
       # Step 4: Zip the dist/ folder
       - name: Zip dist/ folder

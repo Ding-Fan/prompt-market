@@ -7,8 +7,8 @@ import { version } from '../package.json';
 
 const manifest = defineManifest(async (env) => ({
   manifest_version: 3,
-  name: `${env.mode === 'development' ? '[Dev] ' : ''}Browser Extension TypeScript & React Starter`,
-  description: 'Browser Extension, TypeScript, React',
+  name: `${env.mode === 'development' ? '[Dev] ' : ''}Prompt Market`,
+  description: 'quick access to your favorite prompts',
   version,
   background: {
     service_worker: 'background/index.ts',
@@ -48,7 +48,7 @@ const manifest = defineManifest(async (env) => ({
     '48': 'images/extension_48.png',
     '128': 'images/extension_128.png',
   },
-  permissions: ['storage', 'tabs'],
+  permissions: ['storage', 'tabs', 'contextMenus', 'activeTab', 'scripting'],
 }));
 
 export default manifest;

@@ -41,10 +41,13 @@ shadowWrapper.id = 'root';
 shadowWrapper.style.display = 'contents';
 shadowRoot.appendChild(shadowWrapper);
 
-counterStoreReadyPromise.then(() => {
-  createRoot(shadowWrapper).render(
-    <React.StrictMode>
-      <Content />
-    </React.StrictMode>
-  );
-});
+// this part is not needed for the current implementation
+// is will create a modal at the bottom right of the screen
+//
+// counterStoreReadyPromise.then(() => {
+//   createRoot(shadowWrapper).render(
+//     <React.StrictMode>
+//       <Content />
+//     </React.StrictMode>
+//   );
+// });

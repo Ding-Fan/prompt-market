@@ -16,31 +16,54 @@ browser.runtime.onInstalled.addListener(async (details) => {
     //   await browser.tabs.create({ url });
   }
 
-  browser.contextMenus.create({
-    id: 'promptsMenu',
-    title: 'Prompts',
-    contexts: ['editable'], // Show only when right-clicking input/textarea
-  });
-
-  browser.contextMenus.create({
-    id: 'editPrompts',
-    title: 'Edit Prompts',
-    contexts: ['action'], // Right-click on extension icon
-  });
-
-  promptsData.prompts.forEach((prompt) => {
-    browser.contextMenus.create({
-      id: prompt.name,
-      title: prompt.name,
-      parentId: 'promptsMenu',
-      contexts: ['editable'],
-    });
-  });
+  createContextMenu();
+  // promptsData.prompts.forEach((prompt) => {
+  //   browser.contextMenus.create({
+  //     id: prompt.name,
+  //     title: prompt.name,
+  //     parentId: 'promptsMenu',
+  //     contexts: ['editable'],
+  //   });
+  // });
 });
 
+// Create context menu items based on the prompts
+const createContextMenu = async () => {
+  const data = await browser.storage.sync.get('prompts');
+
+  if (data.prompts) {
+    // Clear the existing context menu
+    browser.contextMenus.removeAll();
+
+    browser.contextMenus.create({
+      id: 'promptsMenu',
+      title: 'Prompts',
+      contexts: ['editable'], // Show only when right-clicking input/textarea
+    });
+
+    browser.contextMenus.create({
+      id: 'editPrompts',
+      title: 'Edit Prompts',
+      contexts: ['action'], // Right-click on extension icon
+    });
+
+    // Add menu items for each prompt
+    data.prompts.forEach((prompt: { name: string; content: string }) => {
+      browser.contextMenus.create({
+        id: prompt.name,
+        title: prompt.name,
+        parentId: 'promptsMenu',
+        contexts: ['editable'],
+      });
+    });
+  }
+};
+
 // Handle menu item click
-browser.contextMenus.onClicked.addListener((info, tab) => {
-  const prompt = promptsData.prompts.find((p) => p.name === info.menuItemId);
+browser.contextMenus.onClicked.addListener(async (info, tab) => {
+  const data = await browser.storage.sync.get('prompts');
+
+  const prompt = data.prompts.find((p: { name: string }) => p.name === info.menuItemId);
   if (prompt && tab) {
     browser.scripting.executeScript({
       target: { tabId: tab.id! },
@@ -73,5 +96,11 @@ browser.contextMenus.onClicked.addListener((info) => {
   if (info.menuItemId === 'editPrompts') {
     // Open the prompts page in a new tab
     browser.tabs.create({ url: browser.runtime.getURL('prompts/index.html') });
+  }
+});
+
+browser.runtime.onMessage.addListener((message) => {
+  if (message.action === 'refreshContextMenu') {
+    createContextMenu();
   }
 });

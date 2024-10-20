@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import browser from 'webextension-polyfill';
-import { promptsData } from '../../data/prompts';
 
 // Define the structure for a prompt
 type Prompt = {
@@ -26,9 +25,6 @@ const PromptsPage: React.FC = () => {
 
     if (result.prompts) {
       setPrompts(result.prompts);
-    } else {
-      // If no stored data, load the initial hardcoded prompts
-      setPrompts(promptsData.prompts);
     }
   };
 

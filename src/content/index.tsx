@@ -1,11 +1,7 @@
 import 'webextension-polyfill';
 import 'construct-style-sheets-polyfill';
-import React from 'react';
-import { createRoot } from 'react-dom/client';
 import { debounce } from 'lodash-es';
 import { twind, config, cssom, observe, stringify } from './twind';
-import { counterStoreReadyPromise } from '../shared/counter';
-import Content from './Content';
 
 const contentRoot = document.createElement('div');
 contentRoot.id = 'my-extension-root';

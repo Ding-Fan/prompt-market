@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import browser from 'webextension-polyfill';
 import store from '../shared/counter/store';
-import { promptsData } from '../data/prompts';
 
 store.subscribe((state) => {
   // access store state

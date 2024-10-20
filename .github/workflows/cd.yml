@@ -58,6 +58,8 @@ jobs:
           asset_path: ./dist.zip # Path to the zipped dist folder
           asset_name: dist.zip
           asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub automatically provides this token
 
       # Step 8: Upload dist-firefox-v2.zip to the release
       - name: Upload dist-firefox-v2.zip
@@ -67,3 +69,5 @@ jobs:
           asset_path: ./dist-firefox-v2.zip # Path to the zipped dist-firefox-v2 folder
           asset_name: dist-firefox-v2.zip
           asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub automatically provides this token

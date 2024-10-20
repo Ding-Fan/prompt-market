@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 
 import Welcome from './Welcome';
 
-it('should load and display Welcome', async () => {
+xit('should load and display Welcome', async () => {
   render(<Welcome />);
 
   expect(

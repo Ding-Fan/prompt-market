@@ -22,6 +22,12 @@ browser.runtime.onInstalled.addListener(async (details) => {
     contexts: ['editable'], // Show only when right-clicking input/textarea
   });
 
+  browser.contextMenus.create({
+    id: 'editPrompts',
+    title: 'Edit Prompts',
+    contexts: ['action'], // Right-click on extension icon
+  });
+
   promptsData.prompts.forEach((prompt) => {
     browser.contextMenus.create({
       id: prompt.name,
@@ -61,3 +67,11 @@ function insertPrompt(promptContent: string) {
     activeElement.focus();
   }
 }
+
+// Handle menu item click
+browser.contextMenus.onClicked.addListener((info) => {
+  if (info.menuItemId === 'editPrompts') {
+    // Open the prompts page in a new tab
+    browser.tabs.create({ url: browser.runtime.getURL('prompts/index.html') });
+  }
+});

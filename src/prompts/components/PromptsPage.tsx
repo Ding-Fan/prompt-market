@@ -58,7 +58,7 @@ const PromptsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg max-w-xl">
-      <h1 className="text-2xl font-bold mb-4 text-gray-800">Edit Prompts</h1>
+      <h1 className="text-2xl font-bold mb-4 text-gray-800">Your Prompts</h1>
 
       {/* Form to add new prompt */}
       <div className="mb-6">

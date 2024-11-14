@@ -34,10 +34,17 @@ const createContextMenu = async () => {
   // Clear the existing context menu
   browser.contextMenus.removeAll();
 
+  // Add "Add to Prompt" context menu item
+  browser.contextMenus.create({
+    id: 'addToPrompt',
+    title: 'Add to Prompt',
+    contexts: ['selection'], // Show when text is selected
+  });
+
   browser.contextMenus.create({
     id: 'promptsMenu',
     title: 'Prompts',
-    contexts: ['all'],
+    contexts: ['all'], // Show when right-clicking anywhere
   });
 
   browser.contextMenus.create({
@@ -52,22 +59,73 @@ const createContextMenu = async () => {
       id: prompt.name,
       title: prompt.name,
       parentId: 'promptsMenu',
-      contexts: ['all'],
+      contexts: ['all'], // Show when right-clicking anywhere
     });
   });
 };
 
 // Handle menu item click
 browser.contextMenus.onClicked.addListener(async (info, tab) => {
-  const data = await browser.storage.sync.get('prompts');
+  if (info.menuItemId === 'addToPrompt' && info.selectionText) {
+    // Get the selected text
+    const selectedText = info.selectionText.trim();
 
-  const prompt = data.prompts.find((p: { name: string }) => p.name === info.menuItemId);
-  if (prompt && tab) {
-    browser.scripting.executeScript({
-      target: { tabId: tab.id! },
-      func: insertPrompt,
-      args: [prompt.content],
+    // Generate prompt name using the first five words
+    const words = selectedText.split(/\s+/).slice(0, 5);
+    let promptName = words.join(' ');
+
+    // Get existing prompts
+    const data = await browser.storage.sync.get('prompts');
+    const prompts = data.prompts || [];
+
+    // Handle duplicate prompt names
+    const existingNames = prompts.map((p: { name: string }) => p.name);
+    let counter = 1;
+    let uniqueName = promptName;
+
+    while (existingNames.includes(uniqueName)) {
+      counter += 1;
+      uniqueName = `${promptName} (${counter})`;
+    }
+
+    promptName = uniqueName;
+
+    // Create new prompt object
+    const newPrompt = {
+      name: promptName,
+      content: selectedText,
+    };
+
+    // Add the new prompt to the prompts array
+    prompts.push(newPrompt);
+
+    // Save the updated prompts array back to storage
+    await browser.storage.sync.set({ prompts });
+
+    // Refresh the context menu to include the new prompt
+    createContextMenu();
+
+    // Optionally, notify the user that the prompt was added
+    browser.notifications.create({
+      type: 'basic',
+      iconUrl: browser.runtime.getURL('icons/icon-48.png'),
+      title: 'Prompt Added',
+      message: `New prompt "${promptName}" has been added.`,
     });
+  } else if (info.menuItemId === 'editPrompts') {
+    // Open the prompts page in a new tab
+    browser.tabs.create({ url: browser.runtime.getURL('prompts/index.html') });
+  } else {
+    // Handle prompt insertion
+    const data = await browser.storage.sync.get('prompts');
+    const prompt = data.prompts.find((p: { name: string }) => p.name === info.menuItemId);
+    if (prompt && tab) {
+      browser.scripting.executeScript({
+        target: { tabId: tab.id! },
+        func: insertPrompt,
+        args: [prompt.content],
+      });
+    }
   }
 });
 
@@ -84,14 +142,6 @@ function insertPrompt(promptContent: string) {
     console.error('Input box not found');
   }
 }
-
-// Handle menu item click
-browser.contextMenus.onClicked.addListener((info) => {
-  if (info.menuItemId === 'editPrompts') {
-    // Open the prompts page in a new tab
-    browser.tabs.create({ url: browser.runtime.getURL('prompts/index.html') });
-  }
-});
 
 browser.runtime.onMessage.addListener((message) => {
   if (message.action === 'refreshContextMenu') {

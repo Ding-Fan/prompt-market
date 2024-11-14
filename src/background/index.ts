@@ -37,7 +37,7 @@ const createContextMenu = async () => {
   browser.contextMenus.create({
     id: 'promptsMenu',
     title: 'Prompts',
-    contexts: ['editable'], // Show only when right-clicking input/textarea
+    contexts: ['all'],
   });
 
   browser.contextMenus.create({
@@ -52,7 +52,7 @@ const createContextMenu = async () => {
       id: prompt.name,
       title: prompt.name,
       parentId: 'promptsMenu',
-      contexts: ['editable'],
+      contexts: ['all'],
     });
   });
 };
@@ -73,19 +73,15 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 
 // Function to inject prompt into the input box
 function insertPrompt(promptContent: string) {
-  const activeElement = document.activeElement as HTMLInputElement | HTMLTextAreaElement;
-  if (
-    activeElement &&
-    (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')
-  ) {
-    const startPos = activeElement.selectionStart ?? 0;
-    const endPos = activeElement.selectionEnd ?? activeElement.value.length;
-    const textBefore = activeElement.value.substring(0, startPos);
-    const textAfter = activeElement.value.substring(endPos);
-    activeElement.value = `${textBefore}${promptContent}${textAfter}`;
-    activeElement.selectionStart = startPos! + promptContent.length;
-    activeElement.selectionEnd = startPos! + promptContent.length;
-    activeElement.focus();
+  // Try to find the input box on chatgpt.com
+  const inputElement = document.querySelector('#prompt-textarea');
+  if (inputElement) {
+    const el = inputElement as HTMLDivElement;
+    el.innerHTML = promptContent;
+    el.dispatchEvent(new Event('input', { bubbles: true })); // Ensure React picks up the change
+    el.focus();
+  } else {
+    console.error('Input box not found');
   }
 }
 

@@ -19,7 +19,8 @@
     "lint:type": "tsc --noEmit",
     "test": "jest",
     "ci:test": "run-s \" test --ci --reporters=\"default\" --reporters=\"github-actions\" \"",
-    "prepare": "simple-git-hooks"
+    "prepare": "simple-git-hooks",
+    "release": "release-it"
   },
   "dependencies": {
     "@twind/core": "^1.1.3",
